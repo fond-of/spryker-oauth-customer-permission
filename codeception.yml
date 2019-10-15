@@ -1,4 +1,4 @@
-namespace: fond-of-spryker/navision-company-user
+namespace: fond-of-spryker/oauth-customer-permission
 
 suites:
   unit:
