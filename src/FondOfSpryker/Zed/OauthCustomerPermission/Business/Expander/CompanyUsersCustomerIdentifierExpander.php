@@ -12,9 +12,8 @@ use Generated\Shared\Transfer\PermissionTransfer;
 use Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterface;
 use Spryker\Zed\Permission\Business\PermissionFacadeInterface;
 
-use const \SORT_NUMERIC;
-
-use function array_unique;
+use function in_array;
+use function array_key_exists;
 
 class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIdentifierExpanderInterface
 {
@@ -69,7 +68,7 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
         }
 
         return $customerIdentifierTransfer->setPermissions(
-            $this->removeDuplicateCompanyIdsFromPermissionTransfers($originalPermissionCollectionTransfer)
+            $originalPermissionCollectionTransfer
         );
     }
 
@@ -161,27 +160,20 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
         PermissionTransfer $permissionTransfer
     ) : PermissionTransfer {
         $configuration = $permissionTransfer->getConfiguration();
-        $configuration[static::ID_COMPANIES][] = $companyId;
+
+        $companiesArray = [];
+        if (array_key_exists(static::ID_COMPANIES, $configuration)) {
+            $companiesArray = $configuration[static::ID_COMPANIES];
+        }
+
+        if (!in_array($companyId, $companiesArray, true)) {
+            $companiesArray[] = $companyId;
+        }
+
+        $configuration[static::ID_COMPANIES] = $companiesArray;
+
         $permissionTransfer->setConfiguration($configuration);
 
         return $permissionTransfer;
-    }
-
-    /**
-     * @param \Generated\Shared\Transfer\PermissionCollectionTransfer $permissionCollectionTransfer
-     *
-     * @return \Generated\Shared\Transfer\PermissionCollectionTransfer
-     */
-    protected function removeDuplicateCompanyIdsFromPermissionTransfers(
-        PermissionCollectionTransfer $permissionCollectionTransfer
-    ): PermissionCollectionTransfer {
-        foreach ($permissionCollectionTransfer->getPermissions() as $permissionTransfer) {
-            $configuration = $permissionTransfer->getConfiguration();
-            $configuration[static::ID_COMPANIES] = array_unique($configuration[static::ID_COMPANIES], SORT_NUMERIC);
-
-            $permissionTransfer->setConfiguration($configuration);
-        }
-
-        return $permissionCollectionTransfer;
     }
 }
