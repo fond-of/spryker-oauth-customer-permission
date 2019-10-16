@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander;
 
 use Generated\Shared\Transfer\CompanyUserCollectionTransfer;
-use Generated\Shared\Transfer\CompanyUserCriteriaFilterTransfer;
 use Generated\Shared\Transfer\CustomerIdentifierTransfer;
 use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\PermissionCollectionTransfer;
@@ -55,7 +54,7 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
     ): CustomerIdentifierTransfer {
         $originalPermissionCollectionTransfer = $this->getOriginalPermissionCollection($customerIdentifierTransfer);
 
-        $companyUserCollection = $this->getCustomersCompanyUsers($customerTransfer->getIdCustomer());
+        $companyUserCollection = $this->getCustomersCompanyUsers($customerTransfer);
 
         foreach ($companyUserCollection->getCompanyUsers() as $companyUserTransfer) {
             $permissionCollectionToMerge = $this->permissionFacade->getPermissionsByIdentifier(
@@ -91,17 +90,14 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
     }
 
     /**
-     * @param int $idCustomer
+     * @param \Generated\Shared\Transfer\CustomerTransfer $customerTransfer
      *
      * @return \Generated\Shared\Transfer\CompanyUserCollectionTransfer
      */
-    protected function getCustomersCompanyUsers(int $idCustomer) : CompanyUserCollectionTransfer
+    protected function getCustomersCompanyUsers(CustomerTransfer $customerTransfer) : CompanyUserCollectionTransfer
     {
-        $criteria = new CompanyUserCriteriaFilterTransfer();
-        $criteria->setIdCustomer($idCustomer);
-        $criteria->setIsActive(true);
-
-        return $this->companyUserFacade->getCompanyUserCollection($criteria);
+        return $this->companyUserFacade
+            ->getActiveCompanyUsersByCustomerReference($customerTransfer);
     }
 
     /**
