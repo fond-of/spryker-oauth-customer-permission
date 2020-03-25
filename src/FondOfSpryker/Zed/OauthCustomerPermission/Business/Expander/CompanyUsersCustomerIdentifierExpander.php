@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander;
 
@@ -11,9 +11,8 @@ use Generated\Shared\Transfer\PermissionCollectionTransfer;
 use Generated\Shared\Transfer\PermissionTransfer;
 use Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterface;
 use Spryker\Zed\Permission\Business\PermissionFacadeInterface;
-
-use function in_array;
 use function array_key_exists;
+use function in_array;
 
 class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIdentifierExpanderInterface
 {
@@ -57,7 +56,7 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
 
         foreach ($companyUserCollection->getCompanyUsers() as $companyUserTransfer) {
             $permissionCollectionToMerge = $this->permissionFacade->getPermissionsByIdentifier(
-                (string) $companyUserTransfer->getIdCompanyUser()
+                (string)$companyUserTransfer->getIdCompanyUser()
             );
 
             $originalPermissionCollectionTransfer = $this->mergePermissionCollection(
@@ -93,7 +92,7 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
      *
      * @return \Generated\Shared\Transfer\CompanyUserCollectionTransfer
      */
-    protected function getCustomersCompanyUsers(CustomerTransfer $customerTransfer) : CompanyUserCollectionTransfer
+    protected function getCustomersCompanyUsers(CustomerTransfer $customerTransfer): CompanyUserCollectionTransfer
     {
         return $this->companyUserFacade
             ->getActiveCompanyUsersByCustomerReference($customerTransfer);
@@ -150,7 +149,6 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
 
     /**
      * @param int $companyId
-     *
      * @param \Generated\Shared\Transfer\PermissionTransfer $permissionTransfer
      *
      * @return \Generated\Shared\Transfer\PermissionTransfer
@@ -158,7 +156,7 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
     protected function addCompanyIdToPermissionTransfer(
         int $companyId,
         PermissionTransfer $permissionTransfer
-    ) : PermissionTransfer {
+    ): PermissionTransfer {
         $configuration = $permissionTransfer->getConfiguration();
 
         $companiesArray = [];
