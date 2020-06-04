@@ -9,6 +9,7 @@ use Spryker\Zed\OauthCustomerConnectorExtension\Dependency\Plugin\OauthCustomerI
 
 /**
  * @method \FondOfSpryker\Zed\OauthCustomerPermission\Business\OauthCustomerPermissionFacadeInterface getFacade()
+ * @method \FondOfSpryker\Zed\OauthCustomerPermission\OauthCustomerPermissionConfig getConfig()
  */
 class CompanyUsersCustomerIdentifierExpanderPlugin extends AbstractPlugin implements OauthCustomerIdentifierExpanderPluginInterface
 {

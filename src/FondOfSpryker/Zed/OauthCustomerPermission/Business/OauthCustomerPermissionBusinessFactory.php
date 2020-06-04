@@ -2,13 +2,16 @@
 
 namespace FondOfSpryker\Zed\OauthCustomerPermission\Business;
 
+use FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander\CompanyUsersCustomerIdentifierExpander;
+use FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander\CompanyUsersCustomerIdentifierExpanderInterface;
 use FondOfSpryker\Zed\OauthCustomerPermission\OauthCustomerPermissionDependencyProvider;
 use Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterface;
 use Spryker\Zed\Kernel\Business\AbstractBusinessFactory;
-use FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander\CompanyUsersCustomerIdentifierExpander;
-use FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander\CompanyUsersCustomerIdentifierExpanderInterface;
 use Spryker\Zed\Permission\Business\PermissionFacadeInterface;
 
+/**
+ * @method \FondOfSpryker\Zed\OauthCustomerPermission\OauthCustomerPermissionConfig getConfig()
+ */
 class OauthCustomerPermissionBusinessFactory extends AbstractBusinessFactory
 {
     /**

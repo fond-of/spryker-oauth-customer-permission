@@ -80,6 +80,7 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
         CustomerIdentifierTransfer $customerIdentifierTransfer
     ): PermissionCollectionTransfer {
         $originalPermissionCollectionTransfer = $customerIdentifierTransfer->getPermissions();
+
         if ($originalPermissionCollectionTransfer === null) {
             $originalPermissionCollectionTransfer = new PermissionCollectionTransfer();
         }
@@ -118,6 +119,7 @@ class CompanyUsersCustomerIdentifierExpander implements CompanyUsersCustomerIden
 
             if ($originalPermissionTransfer !== null) {
                 $this->addCompanyIdToPermissionTransfer($companyId, $originalPermissionTransfer);
+
                 continue;
             }
 
