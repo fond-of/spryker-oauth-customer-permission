@@ -32,7 +32,7 @@ class OauthCustomerPermissionFacadeTest extends Unit
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander\CompanyUsersCustomerIdentifierExpanderInterface
      */
-    protected $companyUsersCustomerIdentifierExpanderInterfaceMock;
+    protected $companyUsersCustomerIdentifierExpanderMock;
 
     /**
      * @return void
@@ -51,7 +51,7 @@ class OauthCustomerPermissionFacadeTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyUsersCustomerIdentifierExpanderInterfaceMock = $this->getMockBuilder(CompanyUsersCustomerIdentifierExpanderInterface::class)
+        $this->companyUsersCustomerIdentifierExpanderMock = $this->getMockBuilder(CompanyUsersCustomerIdentifierExpanderInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -64,17 +64,17 @@ class OauthCustomerPermissionFacadeTest extends Unit
      */
     public function testExpandCustomerIdentifierWithCompanyUsersPermissions(): void
     {
-        $this->oauthCustomerPermissionBusinessFactoryMock->expects($this->atLeastOnce())
+        $this->oauthCustomerPermissionBusinessFactoryMock->expects(static::atLeastOnce())
             ->method('createCompanyUsersCustomerIdentifierExpander')
-            ->willReturn($this->companyUsersCustomerIdentifierExpanderInterfaceMock);
+            ->willReturn($this->companyUsersCustomerIdentifierExpanderMock);
 
-        $this->companyUsersCustomerIdentifierExpanderInterfaceMock->expects($this->atLeastOnce())
+        $this->companyUsersCustomerIdentifierExpanderMock->expects(static::atLeastOnce())
             ->method('expandCustomerIdentifierWithPermissions')
             ->with($this->customerIdentifierTransferMock, $this->customerTransferMock)
             ->willReturn($this->customerIdentifierTransferMock);
 
-        $this->assertInstanceOf(
-            CustomerIdentifierTransfer::class,
+        static::assertEquals(
+            $this->customerIdentifierTransferMock,
             $this->oauthCustomerPermissionFacade->expandCustomerIdentifierWithCompanyUsersPermissions(
                 $this->customerIdentifierTransferMock,
                 $this->customerTransferMock

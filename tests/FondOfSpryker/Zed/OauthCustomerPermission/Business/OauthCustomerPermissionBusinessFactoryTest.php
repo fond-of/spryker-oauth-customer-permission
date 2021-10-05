@@ -3,10 +3,9 @@
 namespace FondOfSpryker\Zed\OauthCustomerPermission\Business;
 
 use Codeception\Test\Unit;
-use FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander\CompanyUsersCustomerIdentifierExpanderInterface;
-use FondOfSpryker\Zed\OauthCustomerPermission\OauthCustomerPermissionDependencyProvider;
+use FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander\CompanyUsersCustomerIdentifierExpander;
+use FondOfSpryker\Zed\OauthCustomerPermission\Persistence\OauthCustomerPermissionRepository;
 use Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterface;
-use Spryker\Zed\Kernel\Container;
 use Spryker\Zed\Permission\Business\PermissionFacadeInterface;
 
 class OauthCustomerPermissionBusinessFactoryTest extends Unit
@@ -17,9 +16,9 @@ class OauthCustomerPermissionBusinessFactoryTest extends Unit
     protected $oauthCustomerPermissionBusinessFactory;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Zed\Kernel\Container
+     * @var \PHPUnit\Framework\MockObject\MockObject|\FondOfSpryker\Zed\OauthCustomerPermission\Persistence\OauthCustomerPermissionRepository
      */
-    protected $containerMock;
+    protected $repositoryMock;
 
     /**
      * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Zed\Permission\Business\PermissionFacadeInterface
@@ -36,7 +35,7 @@ class OauthCustomerPermissionBusinessFactoryTest extends Unit
      */
     protected function _before(): void
     {
-        $this->containerMock = $this->getMockBuilder(Container::class)
+        $this->repositoryMock = $this->getMockBuilder(OauthCustomerPermissionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -49,7 +48,7 @@ class OauthCustomerPermissionBusinessFactoryTest extends Unit
             ->getMock();
 
         $this->oauthCustomerPermissionBusinessFactory = new OauthCustomerPermissionBusinessFactory();
-        $this->oauthCustomerPermissionBusinessFactory->setContainer($this->containerMock);
+        $this->oauthCustomerPermissionBusinessFactory->setRepository($this->repositoryMock);
     }
 
     /**
@@ -57,22 +56,8 @@ class OauthCustomerPermissionBusinessFactoryTest extends Unit
      */
     public function testCreateCompanyUsersCustomerIdentifierExpander(): void
     {
-        $this->containerMock->expects($this->atLeastOnce())
-            ->method('has')
-            ->willReturn(true);
-
-        $this->containerMock->expects($this->atLeastOnce())
-            ->method('get')
-            ->withConsecutive(
-                [OauthCustomerPermissionDependencyProvider::FACADE_PERMISSION],
-                [OauthCustomerPermissionDependencyProvider::FACADE_COMPANY_USER]
-            )->willReturnOnConsecutiveCalls(
-                $this->permissionFacadeInterfaceMock,
-                $this->companyUserFacadeInterfaceMock
-            );
-
         $this->assertInstanceOf(
-            CompanyUsersCustomerIdentifierExpanderInterface::class,
+            CompanyUsersCustomerIdentifierExpander::class,
             $this->oauthCustomerPermissionBusinessFactory->createCompanyUsersCustomerIdentifierExpander()
         );
     }
