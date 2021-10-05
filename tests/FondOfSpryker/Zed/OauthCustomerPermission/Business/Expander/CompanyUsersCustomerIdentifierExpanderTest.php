@@ -4,111 +4,50 @@ namespace FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander;
 
 use ArrayObject;
 use Codeception\Test\Unit;
-use Generated\Shared\Transfer\CompanyUserCollectionTransfer;
-use Generated\Shared\Transfer\CompanyUserTransfer;
+use FondOfSpryker\Zed\OauthCustomerPermission\Persistence\OauthCustomerPermissionRepository;
 use Generated\Shared\Transfer\CustomerIdentifierTransfer;
 use Generated\Shared\Transfer\CustomerTransfer;
 use Generated\Shared\Transfer\PermissionCollectionTransfer;
 use Generated\Shared\Transfer\PermissionTransfer;
-use Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterface;
-use Spryker\Zed\Permission\Business\PermissionFacadeInterface;
 
 class CompanyUsersCustomerIdentifierExpanderTest extends Unit
 {
+    /**
+     * @var \FondOfSpryker\Zed\OauthCustomerPermission\Persistence\OauthCustomerPermissionRepository|mixed|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $repositoryMock;
+
+    /**
+     * @var \Generated\Shared\Transfer\CustomerTransfer|mixed|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $customerTransferMock;
+
+    /**
+     * @var \Generated\Shared\Transfer\CustomerIdentifierTransfer|mixed|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $customerIdentifierTransferMock;
+
+    /**
+     * @var \Generated\Shared\Transfer\PermissionTransfer[]|\PHPUnit\Framework\MockObject\MockObject[]
+     */
+    protected $permissionTransferMocks;
+
+    /**
+     * @var \Generated\Shared\Transfer\PermissionCollectionTransfer|mixed|\PHPUnit\Framework\MockObject\MockObject
+     */
+    protected $permissionCollectionTransferMock;
+
     /**
      * @var \FondOfSpryker\Zed\OauthCustomerPermission\Business\Expander\CompanyUsersCustomerIdentifierExpander
      */
     protected $companyUsersCustomerIdentifierExpander;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Zed\Permission\Business\PermissionFacadeInterface
-     */
-    protected $permissionFacadeInterfaceMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Spryker\Zed\CompanyUser\Business\CompanyUserFacadeInterface
-     */
-    protected $companyUserFacadeInterfaceMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\CustomerIdentifierTransfer
-     */
-    protected $customerIdentifierTransferMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\CustomerTransfer
-     */
-    protected $customerTransferMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\PermissionCollectionTransfer
-     */
-    protected $permissionCollectionTransferMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\CompanyUserCollectionTransfer
-     */
-    protected $companyUserCollectionTransferMock;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\CompanyUserTransfer
-     */
-    protected $companyUserTransferMock;
-
-    /**
-     * @var \ArrayObject|\Generated\Shared\Transfer\CompanyUserTransfer[]
-     */
-    protected $companyUserTransferMocks;
-
-    /**
-     * @var int
-     */
-    protected $idCompanyUser;
-
-    /**
-     * @var int
-     */
-    protected $fkCompany;
-
-    /**
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|\Generated\Shared\Transfer\PermissionTransfer
-     */
-    protected $permissionTransferMock;
-
-    /**
-     * @var \ArrayObject|\Generated\Shared\Transfer\PermissionTransfer[]
-     */
-    protected $permissionTransferMocks;
-
-    /**
-     * @var array
-     */
-    protected $configuration;
-
-    /**
-     * @var int
-     */
-    protected $idCompany;
-
-    /**
      * @return void
      */
     protected function _before(): void
     {
-        $this->permissionFacadeInterfaceMock = $this->getMockBuilder(PermissionFacadeInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->companyUserFacadeInterfaceMock = $this->getMockBuilder(CompanyUserFacadeInterface::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->customerIdentifierTransferMock = $this->getMockBuilder(CustomerIdentifierTransfer::class)
+        $this->repositoryMock = $this->getMockBuilder(OauthCustomerPermissionRepository::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -116,47 +55,22 @@ class CompanyUsersCustomerIdentifierExpanderTest extends Unit
             ->disableOriginalConstructor()
             ->getMock();
 
+        $this->customerIdentifierTransferMock = $this->getMockBuilder(CustomerIdentifierTransfer::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->permissionTransferMocks = [
+            $this->getMockBuilder(PermissionTransfer::class)
+                ->disableOriginalConstructor()
+                ->getMock(),
+        ];
+
         $this->permissionCollectionTransferMock = $this->getMockBuilder(PermissionCollectionTransfer::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->companyUserCollectionTransferMock = $this->getMockBuilder(CompanyUserCollectionTransfer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->companyUserTransferMock = $this->getMockBuilder(CompanyUserTransfer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->companyUserTransferMocks = new ArrayObject([
-            $this->companyUserTransferMock,
-        ]);
-
-        $this->idCompanyUser = 1;
-
-        $this->fkCompany = 2;
-
-        $this->key = 'key';
-
-        $this->permissionTransferMock = $this->getMockBuilder(PermissionTransfer::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->permissionTransferMocks = new ArrayObject([
-            $this->permissionTransferMock,
-        ]);
-
-        $this->idCompany = 3;
-
-        $this->configuration = [
-            CompanyUsersCustomerIdentifierExpander::ID_COMPANIES => [
-                $this->idCompany,
-            ],
-        ];
-
         $this->companyUsersCustomerIdentifierExpander = new CompanyUsersCustomerIdentifierExpander(
-            $this->permissionFacadeInterfaceMock,
-            $this->companyUserFacadeInterfaceMock
+            $this->repositoryMock
         );
     }
 
@@ -165,55 +79,39 @@ class CompanyUsersCustomerIdentifierExpanderTest extends Unit
      */
     public function testExpandCustomerIdentifierWithPermissions(): void
     {
-        $this->customerIdentifierTransferMock->expects($this->atLeastOnce())
-            ->method('getPermissions')
-            ->willReturn($this->permissionCollectionTransferMock);
+        $idCustomer = 1;
+        $permissionTransferMocks = $this->permissionTransferMocks;
 
-        $this->companyUserFacadeInterfaceMock->expects($this->atLeastOnce())
-            ->method('getActiveCompanyUsersByCustomerReference')
-            ->with($this->customerTransferMock)
-            ->willReturn($this->companyUserCollectionTransferMock);
+        $this->customerTransferMock->expects(static::atLeastOnce())
+            ->method('getIdCustomer')
+            ->willReturn($idCustomer);
 
-        $this->companyUserCollectionTransferMock->expects($this->atLeastOnce())
-            ->method('getCompanyUsers')
-            ->willReturn($this->companyUserTransferMocks);
-
-        $this->companyUserTransferMock->expects($this->atLeastOnce())
-            ->method('getIdCompanyUser')
-            ->willReturn($this->idCompanyUser);
-
-        $this->permissionFacadeInterfaceMock->expects($this->atLeastOnce())
-            ->method('getPermissionsByIdentifier')
-            ->with($this->idCompanyUser)
-            ->willReturn($this->permissionCollectionTransferMock);
-
-        $this->companyUserTransferMock->expects($this->atLeastOnce())
-            ->method('getFkCompany')
-            ->willReturn($this->fkCompany);
-
-        $this->permissionCollectionTransferMock->expects($this->atLeastOnce())
-            ->method('getPermissions')
+        $this->repositoryMock->expects(static::atLeastOnce())
+            ->method('findPermissionsByIdCustomer')
+            ->with($idCustomer)
             ->willReturn($this->permissionTransferMocks);
 
-        $this->permissionTransferMock->expects($this->atLeastOnce())
-            ->method('getKey')
-            ->willReturn($this->key);
+        $this->customerIdentifierTransferMock->expects(static::atLeastOnce())
+            ->method('getPermissions')
+            ->willReturn($this->permissionCollectionTransferMock);
 
-        $this->permissionTransferMock->expects($this->atLeastOnce())
-            ->method('getConfiguration')
-            ->willReturn($this->configuration);
+        $this->permissionCollectionTransferMock->expects(static::atLeastOnce())
+            ->method('setPermissions')
+            ->with(
+                static::callback(
+                    static function (ArrayObject $permissionTransfers) use ($permissionTransferMocks) {
+                        return $permissionTransfers->getArrayCopy() == $permissionTransferMocks;
+                    }
+                )
+            )->willReturn($this->permissionCollectionTransferMock);
 
-        $this->permissionTransferMock->expects($this->atLeastOnce())
-            ->method('setConfiguration')
-            ->willReturnSelf();
-
-        $this->customerIdentifierTransferMock->expects($this->atLeastOnce())
+        $this->customerIdentifierTransferMock->expects(static::atLeastOnce())
             ->method('setPermissions')
             ->with($this->permissionCollectionTransferMock)
-            ->willReturnSelf();
+            ->willReturn($this->customerIdentifierTransferMock);
 
-        $this->assertInstanceOf(
-            CustomerIdentifierTransfer::class,
+        static::assertEquals(
+            $this->customerIdentifierTransferMock,
             $this->companyUsersCustomerIdentifierExpander->expandCustomerIdentifierWithPermissions(
                 $this->customerIdentifierTransferMock,
                 $this->customerTransferMock
@@ -224,56 +122,62 @@ class CompanyUsersCustomerIdentifierExpanderTest extends Unit
     /**
      * @return void
      */
-    public function testExpandCustomerIdentifierWithPermissionsPermissionNull(): void
+    public function testExpandCustomerIdentifierWithPermissionsWithoutIdCustomer(): void
     {
-        $this->customerIdentifierTransferMock->expects($this->atLeastOnce())
+        $this->customerTransferMock->expects(static::atLeastOnce())
+            ->method('getIdCustomer')
+            ->willReturn(null);
+
+        $this->repositoryMock->expects(static::never())
+            ->method('findPermissionsByIdCustomer');
+
+        $this->customerIdentifierTransferMock->expects(static::never())
+            ->method('getPermissions');
+
+        $this->customerIdentifierTransferMock->expects(static::never())
+            ->method('setPermissions');
+
+        static::assertEquals(
+            $this->customerIdentifierTransferMock,
+            $this->companyUsersCustomerIdentifierExpander->expandCustomerIdentifierWithPermissions(
+                $this->customerIdentifierTransferMock,
+                $this->customerTransferMock
+            )
+        );
+    }
+
+    /**
+     * @return void
+     */
+    public function testExpandCustomerIdentifierWithPermissionsWithoutPredefinedPermission(): void
+    {
+        $idCustomer = 1;
+        $permissionTransferMocks = $this->permissionTransferMocks;
+
+        $this->customerTransferMock->expects(static::atLeastOnce())
+            ->method('getIdCustomer')
+            ->willReturn($idCustomer);
+
+        $this->repositoryMock->expects(static::atLeastOnce())
+            ->method('findPermissionsByIdCustomer')
+            ->with($idCustomer)
+            ->willReturn($this->permissionTransferMocks);
+
+        $this->customerIdentifierTransferMock->expects(static::atLeastOnce())
             ->method('getPermissions')
             ->willReturn(null);
 
-        $this->companyUserFacadeInterfaceMock->expects($this->atLeastOnce())
-            ->method('getActiveCompanyUsersByCustomerReference')
-            ->with($this->customerTransferMock)
-            ->willReturn($this->companyUserCollectionTransferMock);
-
-        $this->companyUserCollectionTransferMock->expects($this->atLeastOnce())
-            ->method('getCompanyUsers')
-            ->willReturn($this->companyUserTransferMocks);
-
-        $this->companyUserTransferMock->expects($this->atLeastOnce())
-            ->method('getIdCompanyUser')
-            ->willReturn($this->idCompanyUser);
-
-        $this->permissionFacadeInterfaceMock->expects($this->atLeastOnce())
-            ->method('getPermissionsByIdentifier')
-            ->with($this->idCompanyUser)
-            ->willReturn($this->permissionCollectionTransferMock);
-
-        $this->companyUserTransferMock->expects($this->atLeastOnce())
-            ->method('getFkCompany')
-            ->willReturn($this->fkCompany);
-
-        $this->permissionCollectionTransferMock->expects($this->atLeastOnce())
-            ->method('getPermissions')
-            ->willReturn($this->permissionTransferMocks);
-
-        $this->permissionTransferMock->expects($this->atLeastOnce())
-            ->method('getKey')
-            ->willReturn($this->key);
-
-        $this->permissionTransferMock->expects($this->atLeastOnce())
-            ->method('getConfiguration')
-            ->willReturn($this->configuration);
-
-        $this->permissionTransferMock->expects($this->atLeastOnce())
-            ->method('setConfiguration')
-            ->willReturnSelf();
-
-        $this->customerIdentifierTransferMock->expects($this->atLeastOnce())
+        $this->customerIdentifierTransferMock->expects(static::atLeastOnce())
             ->method('setPermissions')
-            ->willReturnSelf();
+            ->with(static::callback(
+                static function (PermissionCollectionTransfer $permissionCollectionTransfer) use ($permissionTransferMocks) {
+                    return $permissionCollectionTransfer->getPermissions()->getArrayCopy() == $permissionTransferMocks;
+                }
+            ))
+            ->willReturn($this->customerIdentifierTransferMock);
 
-        $this->assertInstanceOf(
-            CustomerIdentifierTransfer::class,
+        static::assertEquals(
+            $this->customerIdentifierTransferMock,
             $this->companyUsersCustomerIdentifierExpander->expandCustomerIdentifierWithPermissions(
                 $this->customerIdentifierTransferMock,
                 $this->customerTransferMock

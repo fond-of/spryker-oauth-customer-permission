@@ -8,19 +8,22 @@
       "email": "daniel-rose@gmx.de"
     }
   ],
+  "scripts": {
+    "test": "make codeception",
+    "phpcs": "make phpcs",
+    "phpstan": "make phpstan"
+  },
   "require": {
-    "php": ">=7.1",
-    "spryker/company-user": "^2.5.0",
+    "php": ">=7.3",
+    "spryker/company-role": "^1.0.0",
+    "spryker/company-user": "^1.0.0 || ^2.0.0",
     "spryker/oauth-customer-connector-extension": "^1.0.0",
     "spryker/permission": "^1.0.0"
   },
   "require-dev": {
-    "codeception/codeception": "^2.4",
     "fond-of-codeception/spryker": "^1.0",
-    "php-coveralls/php-coveralls": "^2.1",
-    "phpro/grumphp": "^0.14",
-    "sebastian/phpcpd": "^4.0",
-    "spryker/code-sniffer": "^0.12"
+    "spryker/code-sniffer": "*",
+    "spryker-sdk/phpstan-spryker": "*"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -32,7 +35,8 @@
   "autoload-dev": {
     "psr-4": {
       "FondOfSpryker\\": "tests/FondOfSpryker/",
-      "Generated\\": "src/Generated/"
+      "Generated\\": "src/Generated/",
+      "Orm\\Zed\\": "src/Orm/Zed/"
     }
   }
 }

@@ -55,13 +55,13 @@ class CompanyUsersCustomerIdentifierExpanderPluginTest extends Unit
      */
     public function testExpandCustomerIdentifier(): void
     {
-        $this->oauthCustomerPermissionFacadeMock->expects($this->atLeastOnce())
+        $this->oauthCustomerPermissionFacadeMock->expects(static::atLeastOnce())
             ->method('expandCustomerIdentifierWithCompanyUsersPermissions')
             ->with($this->customerIdentifierTransferMock, $this->customerTransferMock)
             ->willReturn($this->customerIdentifierTransferMock);
 
-        $this->assertInstanceOf(
-            CustomerIdentifierTransfer::class,
+        static::assertEquals(
+            $this->customerIdentifierTransferMock,
             $this->companyUsersCustomerIdentifierExpanderPlugin->expandCustomerIdentifier(
                 $this->customerIdentifierTransferMock,
                 $this->customerTransferMock
