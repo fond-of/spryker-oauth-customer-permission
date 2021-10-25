@@ -33,27 +33,24 @@ class PermissionMapper implements PermissionMapperInterface
         $transfers = [];
 
         foreach ($entityCollection as $entity) {
-            $key = $entity->getKey();
+            $transfer = $this->mapEntityToTransfer($entity);
 
-            if (!array_key_exists($key, $transfers)) {
-                $transfers[$key] = $this->mapEntityToTransfer($entity);
-            }
-
-            $configuration = $transfers[$key]->getConfiguration();
-            $idCompany = $entity->getVirtualColumn(OauthCustomerPermissionRepository::VIRTUAL_COL_FK_COMPANY);
+            $configuration = $transfer->getConfiguration();
 
             if (!array_key_exists(static::CONFIGURATION_ID_COMPANIES, $configuration)) {
                 $configuration[static::CONFIGURATION_ID_COMPANIES] = [];
             }
 
-            if (in_array($idCompany, $configuration[static::CONFIGURATION_ID_COMPANIES], true)) {
-                continue;
-            }
+            $configuration['id_companies'] = explode(
+                ',',
+                $entity->getVirtualColumn(OauthCustomerPermissionRepository::VIRTUAL_COL_COMPANY_IDS)
+            );
 
-            $configuration['id_companies'][] = $idCompany;
-            $transfers[$key]->setConfiguration($configuration);
+            $transfer->setConfiguration($configuration);
+
+            $transfers[] = $transfer;
         }
 
-        return array_values($transfers);
+        return $transfers;
     }
 }
