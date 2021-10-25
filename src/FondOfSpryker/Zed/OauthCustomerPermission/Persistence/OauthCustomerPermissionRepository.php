@@ -10,7 +10,7 @@ use Spryker\Zed\Kernel\Persistence\AbstractRepository;
  */
 class OauthCustomerPermissionRepository extends AbstractRepository implements OauthCustomerPermissionRepositoryInterface
 {
-    public const VIRTUAL_COL_FK_COMPANY = 'fk_company';
+    public const VIRTUAL_COL_COMPANY_IDS = 'company_ids';
 
     /**
      * @param int $idCustomer
@@ -19,6 +19,12 @@ class OauthCustomerPermissionRepository extends AbstractRepository implements Oa
      */
     public function findPermissionsByIdCustomer(int $idCustomer): array
     {
+        $withColumnClause = sprintf(
+            'GROUP_CONCAT(%s ORDER BY %s)',
+            SpyCompanyUserTableMap::COL_FK_COMPANY,
+            SpyCompanyUserTableMap::COL_FK_COMPANY
+        );
+
         $entityCollection = $this->getFactory()
             ->getPermissionQuery()
             ->useSpyCompanyRoleToPermissionQuery()
@@ -26,11 +32,13 @@ class OauthCustomerPermissionRepository extends AbstractRepository implements Oa
                     ->useSpyCompanyRoleToCompanyUserQuery()
                         ->useCompanyUserQuery()
                             ->filterByFkCustomer($idCustomer)
-                            ->withColumn(SpyCompanyUserTableMap::COL_FK_COMPANY, static::VIRTUAL_COL_FK_COMPANY)
+                            ->filterByIsActive(true)
                         ->endUse()
                     ->endUse()
                 ->endUse()
             ->endUse()
+            ->withColumn($withColumnClause, static::VIRTUAL_COL_COMPANY_IDS)
+            ->groupByIdPermission()
             ->find();
 
         return $this->getFactory()
