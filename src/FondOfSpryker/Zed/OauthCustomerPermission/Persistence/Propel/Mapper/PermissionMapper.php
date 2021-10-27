@@ -41,9 +41,12 @@ class PermissionMapper implements PermissionMapperInterface
                 $configuration[static::CONFIGURATION_ID_COMPANIES] = [];
             }
 
-            $configuration['id_companies'] = explode(
-                ',',
-                $entity->getVirtualColumn(OauthCustomerPermissionRepository::VIRTUAL_COL_COMPANY_IDS)
+            $configuration['id_companies'] = array_map(
+                'intval',
+                explode(
+                    ',',
+                    $entity->getVirtualColumn(OauthCustomerPermissionRepository::VIRTUAL_COL_COMPANY_IDS)
+                )
             );
 
             $transfer->setConfiguration($configuration);
